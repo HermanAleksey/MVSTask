@@ -1,16 +1,18 @@
 package com.example.mvsrandomnubersgeneratorapp
 
 import android.graphics.Color
-import android.graphics.ColorSpace
-import android.graphics.DashPathEffect
-import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
-import kotlin.random.Random
+import java.util.*
+import java.util.Map.Entry.comparingByValue
+import kotlin.collections.HashMap
+import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -18,19 +20,36 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val graph = findViewById<GraphView>(R.id.graph)
-        /*val dotsArray = arrayOf(
-            DataPoint(0.0, 1.0),
-            DataPoint(1.0, 5.0),
-            DataPoint(2.0, 3.0),
-            DataPoint(3.0, 2.0),
-            DataPoint(4.0, 6.0)
-        )*/
-
-        val dotsArray = arrayOfNulls<DataPoint>(100)
-        for (i in dotsArray.indices){
-            dotsArray[i] = DataPoint(i.toDouble(), Random.nextDouble(10.0))
+        repeat(10){
+//            Log.e("TAG", "Number: ${MyRandom().generateRandomGaussianNumber()}" )
+            Log.e("TAG", "Number: ${Random().nextGaussian() / 2}")
         }
+
+        val graph = findViewById<GraphView>(R.id.graph)
+
+
+        //Генерация массива Гаусовой числовой последовательности
+        val gaussianArray = arrayOfNulls<Int>(100)
+        for (i in gaussianArray.indices){
+            gaussianArray[i] =  (Random().nextGaussian().absoluteValue*5).roundToInt()
+        }
+        //Мэпа количества каждого значения
+        val myMap:MutableMap<Int, Int> = HashMap()
+        gaussianArray.forEach {
+            if (!myMap.containsKey(it)){
+                myMap.put(it!!,1)
+            } else {
+                myMap.put(it!!, myMap[it]!! +1)
+            }
+        }
+        //Создание массива точек
+        val dotsArray = arrayOf<DataPoint>()
+        myMap.entries.stream().sorted()
+        for (i in 0 until myMap.size){
+            dotsArray[i] = DataPoint(i.toDouble(), myMap[i]!!.toDouble())
+        }
+
+        // Применение массива к гистограмме
         val series1 = LineGraphSeries(dotsArray)
         val series2 = BarGraphSeries(dotsArray)
         series1.color = Color.BLACK
