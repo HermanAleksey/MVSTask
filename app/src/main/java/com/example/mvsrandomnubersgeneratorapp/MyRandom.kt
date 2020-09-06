@@ -27,14 +27,14 @@ class MyRandom {
     *  функцию распределения (квантиль) с параметром U.
     * */
 
-    fun generateRandomKoshiNumber():Double{
-        return generateRandomGaussianNumber()/generateRandomGaussianNumber()
-    }
+    fun nextNormal() = (
+            (Random().nextDouble()
+                    + Random().nextDouble()
+                    + Random().nextDouble()
+                    + Random().nextDouble()
+                    + Random().nextDouble()
+                    + Random().nextDouble())
+                    / 6)
 
-    fun generateRandomGaussianNumber(): Double{
-        //Гаусово распределение  = Нормальное распределение
-//        return (min + Random().nextGaussian()*(max-min)).toInt()
-        return Random().nextGaussian()
-    }
-
+    fun nextKoshi(max:Int) = ((nextNormal() / nextNormal())*max).toInt()
 }
