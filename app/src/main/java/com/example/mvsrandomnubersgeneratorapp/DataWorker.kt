@@ -5,7 +5,7 @@ import com.jjoe64.graphview.series.DataPoint
 class DataWorker {
 
 
-    //Генерирует последовательность псевдо-случайных чисел
+    //Генерирует последовательность псевдо-случайных чисел на весь размер массива
     fun generateRandomNumbersSequence(
         array: Array<Int?>,
         distribution: String = "Koshi", randomModification: Int

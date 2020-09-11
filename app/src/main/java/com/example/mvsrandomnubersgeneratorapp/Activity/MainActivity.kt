@@ -1,18 +1,19 @@
 package com.example.mvsrandomnubersgeneratorapp.Activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mvsrandomnubersgeneratorapp.AsyncShowBarChat
 import com.example.mvsrandomnubersgeneratorapp.DataWorker
-import com.example.mvsrandomnubersgeneratorapp.MyRandom
+import com.example.mvsrandomnubersgeneratorapp.GraphSettings
 import com.example.mvsrandomnubersgeneratorapp.R
 import com.example.mvsrandomnubersgeneratorapp.ViewHolder.MainActivityHolder
+import com.example.mvsrandomnubersgeneratorapp.ViewHolder.MainActivityHolder.array
+import com.example.mvsrandomnubersgeneratorapp.ViewHolder.MainActivityHolder.subArray
 import com.jjoe64.graphview.GraphView
-import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -23,8 +24,6 @@ class MainActivity : AppCompatActivity() {
     val CONFIGURE_FIRST_GRAPH:Int = 1
     val CONFIGURE_SECOND_GRAPH:Int  = 2
 
-    lateinit var dotsArray: Array<DataPoint?>
-    lateinit var array: Array<Int?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,57 +31,33 @@ class MainActivity : AppCompatActivity() {
         setTitle("Koshi")
 
         //Генерация массива Гаусовой числовой последовательности
-        array = arrayOfNulls(6553)
-        DataWorker().generateRandomNumbersSequence(array, "Koshi", 1000)
-
-        //Мэпа количества каждого значения
-        val myMap: MutableMap<Int, Int> = HashMap()
-        DataWorker().convertToMap(array, myMap)
-
-        //Создание массива точек
-        val sortedMap = myMap.toSortedMap()
-        val arrayKeys = sortedMap.keys.toIntArray()
-        val arrayValues = sortedMap.values.toIntArray()
-
-        dotsArray = arrayOfNulls(arrayKeys.size)
-        DataWorker().fillDataPointsArray(dotsArray, arrayKeys, arrayValues)
+        DataWorker().generateRandomNumbersSequence(array, "Koshi", 100)
 
         configureGraph(1)
         configureGraph(2)
-//        setBarChat(dotsArray,graph)
 
-        //Первое значение второго массива - количество элементов выборки
-        //Второе - начальное знаечние для доставания выборки из изначального массива
+
         button_mainactivity_generate_graph.setOnClickListener {
+            val numberOfElements = edit_text_main_num_of_elements.text.toString().toInt()
+            array = arrayOfNulls(numberOfElements)
+            DataWorker().generateRandomNumbersSequence(array, "Koshi", 100)
+
             AsyncShowBarChat().execute(array)
+            graphview_mainactivity_graph.removeAllSeries()
             val series1 = LineGraphSeries(MainActivityHolder.dotsArray)
             graphview_mainactivity_graph.addSeries(series1)
         }
         button_mainactivity_generate_sub_graph.setOnClickListener {
-            AsyncShowBarChat().execute(array)
-            val series1 = LineGraphSeries(MainActivityHolder.dotsArray)
-            graphview_mainactivity_graph.addSeries(series1)
-        }
-        graphview_mainactivity_graph.setOnLongClickListener {
-            val intent = Intent(this, GraphSettingsActivity::class.java)
-            intent.putExtra("graphNumber",CONFIGURE_FIRST_GRAPH)
-            startActivityForResult(
-                intent, CONFIGURE_FIRST_GRAPH
-            )
-            return@setOnLongClickListener true
-        }
-        graphview_mainactivity_subgraph.setOnLongClickListener {
-            intent.putExtra("graphNumber",CONFIGURE_SECOND_GRAPH)
-            startActivityForResult(
-                intent, CONFIGURE_SECOND_GRAPH
-            )
-            return@setOnLongClickListener true
-        }
-    }
+            val firstElement = edit_text_main_start_sub_array.text.toString().toInt()
+            val lastElement = edit_text_main_end_sub_array.text.toString().toInt()
+            subArray = array.copyOfRange(firstElement,lastElement)
 
-    override fun onDestroy() {
-        super.onDestroy()
-        MainActivityHolder.array = array
+            AsyncShowBarChat().execute(subArray)
+            graphview_mainactivity_subgraph.removeAllSeries()
+            val series1 = LineGraphSeries(MainActivityHolder.dotsArray)
+            graphview_mainactivity_subgraph.addSeries(series1)
+
+        }
     }
 
     private fun configureGraph(
@@ -117,5 +92,31 @@ class MainActivity : AppCompatActivity() {
         }
         // редактиует настройки того граффа, каоторый изменяли
         configureGraph(requestCode)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.menu_item_main_graph_settings -> {
+                val intent = Intent(this, GraphSettingsActivity::class.java)
+                intent.putExtra("graphNumber",CONFIGURE_FIRST_GRAPH)
+                startActivityForResult(
+                    intent, CONFIGURE_FIRST_GRAPH
+                )
+            }
+            R.id.menu_item_main_subgraph_settings -> {
+                val intent = Intent(this, GraphSettingsActivity::class.java)
+                intent.putExtra("graphNumber",CONFIGURE_SECOND_GRAPH)
+                startActivityForResult(
+                    intent, CONFIGURE_SECOND_GRAPH
+                )
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

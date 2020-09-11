@@ -66,6 +66,7 @@
             android:text="From:" />
 
         <EditText
+            android:id="@+id/edit_text_main_start_sub_array"
             android:layout_width="wrap_content"
             android:minWidth="50dp"
             android:layout_height="match_parent"
@@ -79,6 +80,7 @@
             android:text="To:"/>
 
         <EditText
+            android:id="@+id/edit_text_main_end_sub_array"
             android:layout_width="wrap_content"
             android:minWidth="50dp"
             android:layout_height="match_parent"
@@ -92,6 +94,7 @@
             android:text="Step:"/>
 
         <EditText
+            android:id="@+id/edit_text_main_step_sub_array"
             android:layout_width="wrap_content"
             android:minWidth="50dp"
             android:layout_height="match_parent"

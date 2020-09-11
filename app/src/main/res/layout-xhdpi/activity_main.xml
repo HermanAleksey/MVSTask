@@ -66,6 +66,7 @@
             android:text="From:" />
 
         <EditText
+            android:id="@+id/edit_text_main_start_sub_array"
             android:layout_width="wrap_content"
             android:minWidth="50dp"
             android:layout_height="match_parent"
@@ -79,6 +80,7 @@
             android:text="To:"/>
 
         <EditText
+            android:id="@+id/edit_text_main_end_sub_array"
             android:layout_width="wrap_content"
             android:minWidth="50dp"
             android:layout_height="match_parent"
@@ -92,11 +94,12 @@
             android:text="Step:"/>
 
         <EditText
-            android:layout_width="wrap_content"
-            android:minWidth="50dp"
-            android:layout_height="match_parent"
+            android:id="@+id/edit_text_main_step_sub_array"
             style="@style/MyTextViewMainStyleXHDPI"
-            android:text="1024"/>
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minWidth="50dp"
+            android:text="1024" />
 
         <Button
             android:id="@+id/button_mainactivity_generate_sub_graph"

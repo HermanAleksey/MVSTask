@@ -3,6 +3,9 @@
 
     <item
         android:id="@+id/menu_item_main_graph_settings"
-        android:title="Настройки гистограмм" />
+        android:title="Настройки гистограммы #1" />
 
+    <item
+        android:id="@+id/menu_item_main_subgraph_settings"
+        android:title="Настройки гистограммы #2" />
 </menu>
